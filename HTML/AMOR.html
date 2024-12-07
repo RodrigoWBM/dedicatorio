@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Te Amo</title>
+  <style>
+    body {
+      margin: 0;
+      background-color: black;
+      color: white;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      height: 100vh;
+      overflow: hidden; /* Prevenir rolagem global */
+    }
+
+    .content-container {
+      width: 100%;
+      max-width: 600px;
+      height: 100%;
+      overflow-y: auto; /* Habilitar rolagem interna */
+      padding: 20px;
+      box-sizing: border-box;
+      scroll-behavior: smooth; /* Rolagem suave */
+    }
+
+    .fixed-image {
+      width: 100%;
+      border-radius: 15px;
+      margin-bottom: 20px;
+    }
+
+    .text-box {
+      background-color: rgba(255, 0, 0, 0.7); /* Fundo semitransparente */
+      padding: 15px;
+      border-radius: 10px;
+      text-align: center;
+      margin-bottom: 20px;
+      font-size: 1.2rem;
+      line-height: 1.6;
+    }
+
+    .gallery img {
+      max-width: 100%;
+      display: none;
+      margin-bottom: 20px;
+    }
+
+    .gallery img.active {
+      display: block;
+    }
+
+    .buttons {
+      margin-bottom: 20px;
+      text-align: center;
+    }
+
+    .buttons button {
+      background-color: red;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+    }
+
+    .buttons button:hover {
+      background-color: darkred;
+    }
+
+    .timer {
+      text-align: center;
+      font-size: 1.5rem;
+      margin-bottom: 30px;
+    }
+
+    /* Estilo para os corações animados */
+    .heart {
+      position: absolute;
+      width: 20px;
+      height: 20px;
+      background: red;
+      opacity: 0.7;
+      clip-path: polygon(50% 0%, 100% 35%, 75% 100%, 50% 75%, 25% 100%, 0% 35%);
+      animation: float 5s infinite;
+    }
+
+    @keyframes float {
+      0% {
+        transform: translateY(100vh) translateX(0);
+        opacity: 0.8;
+      }
+      50% {
+        opacity: 1;
+      }
+      100% {
+        transform: translateY(-10vh) translateX(calc(-50px + 100px * var(--direction)));
+        opacity: 0;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Contêiner para os corações -->
+  <div id="heart-container"></div>
+
+  <div class="content-container">
+    <!-- Imagem fixa -->
+    <img src="img/primeira.jpeg" class="fixed-image" alt="Foto Fixa">
+
+    <!-- Textos em caixas -->
+    <div class="text-box">
+      Te amo e Nada Mais - João Neto e Frederico
+    </div>
+
+    <!-- Cronômetro -->
+    <div class="timer" id="timer">Calculando...</div>
+
+    <!-- Galeria de fotos -->
+    <div class="gallery">
+      <img src="img/1.jpeg" class="active" alt="Foto 1">
+      <img src="img/2.jpeg" alt="Foto 2">
+      <img src="img/3.jpeg" alt="Foto 3">
+      <img src="img/4.jpeg" alt="Foto 4">
+      <img src="img/5.jpeg" alt="Foto+5">
+      <img src="img/5.jpeg" alt="Foto+6">
+      <img src="img/6.jpeg" alt="Foto+7">
+    </div>
+    <div class="buttons">
+      <button onclick="previousImage()">Anterior</button>
+      <button onclick="nextImage()">Próxima</button>
+    </div>
+
+    <!-- Mensagem em uma caixa -->
+    <div class="text-box">
+        60 segundos - Gusttavo Lima
+    </div>
+
+    <!-- Adicionando imagem fixa acima e abaixo -->
+    <img src="img/segunda.jpeg" class="fixed-image" alt="Foto fixa 1">
+
+    <!-- Outro texto em caixa -->
+    
+
+    <img src="img/terceira.jpeg" class="fixed-image" alt="Foto fixa 2">
+  </div>
+ 
+
+  <script>
+    // Cronômetro
+    function updateTimer() {
+      const startDate = new Date('2020-12-05'); // Data inicial ajustada
+      const now = new Date();
+
+      const diffInMilliseconds = now - startDate;
+
+      const totalSeconds = Math.floor(diffInMilliseconds / 1000);
+      const years = Math.floor(totalSeconds / (365.25 * 24 * 60 * 60));
+      const months = Math.floor((totalSeconds % (365.25 * 24 * 60 * 60)) / (30 * 24 * 60 * 60));
+      const days = Math.floor((totalSeconds % (30 * 24 * 60 * 60)) / (24 * 60 * 60));
+      const hours = Math.floor((totalSeconds % (24 * 60 * 60)) / (60 * 60));
+      const minutes = Math.floor((totalSeconds % (60 * 60)) / 60);
+      const seconds = Math.floor(totalSeconds % 60);
+
+      document.getElementById('timer').textContent =
+        `${years} anos, ${months} meses, ${days} dias, ${hours} horas, ${minutes} minutos e ${seconds} segundos desde 05/12/2020`;
+    }
+
+    setInterval(updateTimer, 1000);
+    updateTimer();
+
+    // Galeria
+    const images = document.querySelectorAll('.gallery img');
+    let currentIndex = 0;
+
+    function showImage(index) {
+      images.forEach((img, i) => {
+        img.classList.toggle('active', i === index);
+      });
+    }
+
+    function previousImage() {
+      currentIndex = (currentIndex - 1 + images.length) % images.length;
+      showImage(currentIndex);
+    }
+
+    function nextImage() {
+      currentIndex = (currentIndex + 1) % images.length;
+      showImage(currentIndex);
+    }
+
+    // Criando o efeito de corações
+    function createHeart() {
+      const heart = document.createElement('div');
+      heart.classList.add('heart');
+      heart.style.left = Math.random() * 100 + 'vw';
+      heart.style.animationDuration = Math.random() * 3 + 3 + 's';
+      heart.style.setProperty('--direction', Math.random() > 0.5 ? 1 : -1);
+      document.getElementById('heart-container').appendChild(heart);
+
+      setTimeout(() => heart.remove(), 6000);
+    }
+
+    setInterval(createHeart, 300);
+  </script>
+</body>
+</html>
